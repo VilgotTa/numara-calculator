@@ -319,7 +319,8 @@ const isModalOpen = () => modalOpenState
 const setupKeyboardShortcuts = () => {
   const keys = {
     '$mod+D': 'clearButton',
-    '$mod+Shift+C': 'copyButton',
+    // Ctrl+C is free on macOS (Cmd+C is the native copy); elsewhere Ctrl+C is copy, so add Shift.
+    [isMac ? 'Control+C' : '$mod+Shift+C']: 'copyButton',
     '$mod+N': 'newPageButton',
     '$mod+P': 'printButton',
     'Shift+TAB': 'sideBarButton'
