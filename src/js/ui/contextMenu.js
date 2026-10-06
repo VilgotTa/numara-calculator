@@ -143,7 +143,11 @@ export function copyAll() {
   cm.eachLine((line) => {
     const text = line.text.trim()
 
-    copiedCalc.push(!text ? '' : text.match(/^(#|\/\/)/) ? text : `${text} = ${answersMap[lineIdx] ?? ''}`)
+    const answer = answersMap[lineIdx] ?? ''
+    const rhs = text.match(/^[A-Za-z_]\w*\s*=\s*([^=].*)$/)?.[1].trim()
+    const isLiteral = rhs !== undefined && (/^[-+]?(\d[\d_,]*\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(rhs) || rhs === answer)
+
+    copiedCalc.push(!text || text.match(/^(#|\/\/)/) || isLiteral ? text : `${text}=${answer}`)
 
     lineIdx++
   })

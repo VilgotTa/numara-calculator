@@ -319,6 +319,7 @@ const isModalOpen = () => modalOpenState
 const setupKeyboardShortcuts = () => {
   const keys = {
     '$mod+D': 'clearButton',
+    '$mod+Shift+C': 'copyButton',
     '$mod+N': 'newPageButton',
     '$mod+P': 'printButton',
     'Shift+TAB': 'sideBarButton'
