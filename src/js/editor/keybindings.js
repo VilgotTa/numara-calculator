@@ -25,7 +25,9 @@ const DEFAULT_EVENT = 'keydown'
  * Platform detection code.
  */
 const PLATFORM = typeof navigator === 'object' ? (navigator.userAgentData?.platform ?? navigator.platform) : ''
-const APPLE_DEVICE = /Mac|iPod|iPhone|iPad/.test(PLATFORM)
+// Electron spoofs a Windows user agent, so prefer the real OS exposed by the preload script.
+const APPLE_DEVICE =
+  typeof window === 'object' && window.numara ? window.numara.isMac : /Mac|iPod|iPhone|iPad/.test(PLATFORM)
 
 /**
  * An alias for creating platform-specific keybinding aliases.
