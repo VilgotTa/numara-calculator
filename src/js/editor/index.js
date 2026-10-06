@@ -156,6 +156,7 @@ CodeMirror.defineMode('numara', () => ({
         if (currencyTokens.has(cmStream)) style = 'currency'
         else if (/\bline\d+\b/.test(cmStream)) style = 'lineNo'
         else if (keywordTokens.has(cmStream)) style = 'keyword'
+        else if (cmStream === 'sum' && stream.peek() !== '(' && !app.mathScope.has('sum')) style = 'variable'
         else if (app.mathScope.has(cmStream) && typeof app.mathScope.get(cmStream) !== 'function') style = 'variable'
         else if (math.Unit.UNITS[cmStream]?.base.key === 'USD_STUFF') style = 'currency'
         else if (functionTokens.has(cmStream) || dateTimeMethodsSet.has(cmStream)) style = 'function'

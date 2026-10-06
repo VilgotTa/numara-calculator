@@ -34,7 +34,7 @@ export function checkColorChange() {
 
 export const colors = {
   defaults: {
-    answer: { title: 'Answers', class: '.answer', dark: '#1eb5f0', light: '#17586b' },
+    answer: { title: 'Answers', class: '.answer', dark: '#7ac74f', light: '#4a9a2a' },
     comment: { title: 'Comments', class: '.cm-comment', dark: '#727272', light: '#bebebe' },
     constant: { title: 'Constants', class: '.cm-constant', dark: '#39baa0', light: '#2c917d' },
     currency: { title: 'Currencies', class: '.cm-currency', dark: '#009688', light: '#009688' },
@@ -57,7 +57,7 @@ export const colors = {
     plain: { title: 'Plain', class: '.cm-plain, .answer, .lineError', dark: '#e6e6e6', light: '#333333' },
     text: { title: 'Text', class: '.cm-text', dark: '#e6e6e6', light: '#333333' },
     unit: { title: 'Units', class: '.cm-unit, .cm-udu', dark: '#6b9cd3', light: '#005cc5' },
-    variable: { title: 'Variables', class: '.cm-variable', dark: '#96b4c4', light: '#57707c' }
+    variable: { title: 'Variables', class: '.cm-variable', dark: '#5aa9e6', light: '#2f7fc1' }
   },
 
   /**
@@ -73,6 +73,20 @@ export const colors = {
         applyChange(app.colors, colors.defaults, diff)
         store.set('colors', app.colors)
       })
+
+      // Move colors still at the previous defaults over to the new ones. Customized colors are kept.
+      const previousDefaults = {
+        answer: { dark: '#1eb5f0', light: '#17586b' },
+        variable: { dark: '#96b4c4', light: '#57707c' }
+      }
+
+      Object.entries(previousDefaults).forEach(([name, themes]) => {
+        Object.entries(themes).forEach(([theme, value]) => {
+          if (app.colors[name]?.[theme] === value) app.colors[name][theme] = colors.defaults[name][theme]
+        })
+      })
+
+      store.set('colors', app.colors)
     } else {
       app.colors = { ...colors.defaults }
       store.set('colors', app.colors)

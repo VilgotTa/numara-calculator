@@ -32,6 +32,9 @@ const REGEX_CONTINUATION = /[+\-*/]/
 const REGEX_DATE_TIME =
   /[+-] * .*? *(millisecond|second|minute|hour|day|week|month|quarter|year|decade|century|centuries|millennium|millennia)s?/gi
 const REGEX_PCNT_OF = /%[ ]*of[ ]*/g
+const REGEX_SUM = /\bsum\b(?!\s*\()/
+const REGEX_SUM_ASSIGN = /^\s*sum\s*=/
+const SUM_SCOPE_KEY = '__sum__'
 const REGEX_PLOT = /^\s*[a-zA-Z_]\w*\s*\(\s*[a-zA-Z_]\w*\s*\)\s*=/
 
 const CLASS_ANSWER = 'answer'
@@ -104,6 +107,7 @@ function setScope(key, value) {
  */
 function evaluateLine(line, lineIndex, lineHandle, stats, prevLineText) {
   let answer, answerCopy, answerOut
+  let usesSum = false
 
   try {
     // Pre‑process locale and currency symbols
@@ -208,6 +212,13 @@ function evaluateLine(line, lineIndex, lineHandle, stats, prevLineText) {
       }
     }
 
+    // A bare `sum` totals the lines above it, back to the previous blank line.
+    if (!app.mathScope.has('sum') && !REGEX_SUM_ASSIGN.test(line) && REGEX_SUM.test(line)) {
+      usesSum = true
+      line = line.replaceAll(new RegExp(REGEX_SUM, 'g'), SUM_SCOPE_KEY)
+      setScope(SUM_SCOPE_KEY, stats.runningSubtotal.length ? math.sum(stats.runningSubtotal) : 0)
+    }
+
     // Evaluate the expression. Try compiled evaluation first. Fall back to altEvaluate if compilation fails.
     try {
       const expr = line.trim()
@@ -232,7 +243,7 @@ function evaluateLine(line, lineIndex, lineHandle, stats, prevLineText) {
     setScope(`line${lineIndex + 1}`, answer)
 
     // Update stats after evaluation
-    if (!keywords.some((kw) => line.includes(kw.key))) {
+    if (!usesSum && !keywords.some((kw) => line.includes(kw.key))) {
       stats.runningTotal.push(answer)
       stats.runningSubtotal.push(answer)
     }
@@ -277,6 +288,8 @@ function evaluateLine(line, lineIndex, lineHandle, stats, prevLineText) {
     const errorLink = app.settings.lineErrors ? 'Error' : ''
 
     return `<a class="${CLASS_LINE_ERROR_LINK}" data-error="${errorMessage}">${errorLink}</a>`
+  } finally {
+    app.mathScope.delete(SUM_SCOPE_KEY)
   }
 }
 
