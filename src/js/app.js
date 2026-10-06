@@ -319,8 +319,8 @@ const isModalOpen = () => modalOpenState
 const setupKeyboardShortcuts = () => {
   const keys = {
     '$mod+D': 'clearButton',
-    // Ctrl+C is free on macOS (Cmd+C is the native copy); elsewhere Ctrl+C is copy, so add Shift.
-    [isMac ? 'Control+C' : '$mod+Shift+C']: 'copyButton',
+    // On macOS Cmd+C copies the page when nothing is selected; elsewhere Ctrl+C is native copy, so add Shift.
+    [isMac ? '$mod+C' : '$mod+Shift+C']: 'copyButton',
     '$mod+N': 'newPageButton',
     '$mod+P': 'printButton',
     'Shift+TAB': 'sideBarButton'
@@ -330,6 +330,11 @@ const setupKeyboardShortcuts = () => {
 
   for (const [command, button] of Object.entries(keys)) {
     shortcuts[command] = (event) => {
+      // Leave native copy alone when there is a selection or a dialog is open.
+      if (button === 'copyButton' && (isModalOpen() || cm.somethingSelected() || window.getSelection().toString())) {
+        return
+      }
+
       event.preventDefault()
 
       if (!isModalOpen()) {
