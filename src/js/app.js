@@ -319,6 +319,8 @@ const isModalOpen = () => modalOpenState
 const setupKeyboardShortcuts = () => {
   const keys = {
     '$mod+D': 'clearButton',
+    // Cmd+Backspace is delete-to-line-start on macOS, so only bind it there (Ctrl+Backspace deletes a word elsewhere).
+    ...(isMac && { '$mod+Backspace': 'clearButton' }),
     // On macOS Cmd+C copies the page when nothing is selected; elsewhere Ctrl+C is native copy, so add Shift.
     [isMac ? '$mod+C' : '$mod+Shift+C']: 'copyButton',
     '$mod+N': 'newPageButton',
@@ -334,6 +336,9 @@ const setupKeyboardShortcuts = () => {
       if (button === 'copyButton' && (isModalOpen() || cm.somethingSelected() || window.getSelection().toString())) {
         return
       }
+
+      // Don't clear the page from inside a dialog's text field.
+      if (command.endsWith('Backspace') && isModalOpen()) return
 
       event.preventDefault()
 
