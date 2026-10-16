@@ -28,6 +28,18 @@ math.import(factory('formulajs', [], () => formulajs))
 math.import(factory('nerdamer', [], () => nerdamer))
 math.import(factory('DateTime', [], () => DateTime))
 
+// solve("0.1*w+(1-w)*0.05=0.075", "w") returns a number for one solution, or an array for several.
+math.import({
+  solve: (equation, variable) => {
+    const solutions = nerdamer
+      .solve(String(equation), String(variable))
+      .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
+      .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
+
+    return solutions.length === 1 ? solutions[0] : solutions
+  }
+})
+
 const REGEX_CONTINUATION = /[+\-*/]/
 const REGEX_DATE_TIME =
   /[+-] * .*? *(millisecond|second|minute|hour|day|week|month|quarter|year|decade|century|centuries|millennium|millennia)s?/gi
