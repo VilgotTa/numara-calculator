@@ -28,13 +28,23 @@ math.import(factory('formulajs', [], () => formulajs))
 math.import(factory('nerdamer', [], () => nerdamer))
 math.import(factory('DateTime', [], () => DateTime))
 
-// solve("0.1*w+(1-w)*0.05=0.075", "w") returns a number for one solution, or an array for several.
+// solve("0.1*w+(1-w)*0.05=0.075", "w") returns a number for one solution, or a list for several, smallest first.
+// An optional third argument picks one solution: solve("x^2-4=0", "x", 2) returns the 2nd smallest.
 math.import({
-  solve: (equation, variable) => {
+  solve: (equation, variable, index) => {
     const solutions = nerdamer
       .solve(String(equation), String(variable))
       .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
       .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
+      .sort((a, b) => (typeof a === 'number' && typeof b === 'number' ? a - b : typeof a === 'number' ? -1 : 0))
+
+    if (index !== undefined) {
+      if (!Number.isInteger(index) || index < 1 || index > solutions.length) {
+        throw new RangeError(`solve: root ${index} not found, the equation has ${solutions.length} root(s)`)
+      }
+
+      return solutions[index - 1]
+    }
 
     return solutions.length === 1 ? solutions[0] : solutions
   }
@@ -172,8 +182,15 @@ function quoteSolveArgs(line) {
     const isQuoted = /^(["']).*\1$/s.test(equation ?? '')
     const isScopeName = /^[A-Za-z_]\w*$/.test(equation ?? '') && app.mathScope.has(equation)
 
-    if (args.length === 2 && equation && !isQuoted && !isScopeName && /^[A-Za-z_]\w*$/.test(variable ?? '')) {
-      result += line.slice(last, open) + `${JSON.stringify(equation)}, ${JSON.stringify(variable)})`
+    if (
+      (args.length === 2 || args.length === 3) &&
+      equation &&
+      !isQuoted &&
+      !isScopeName &&
+      /^[A-Za-z_]\w*$/.test(variable ?? '')
+    ) {
+      result +=
+        line.slice(last, open) + [JSON.stringify(equation), JSON.stringify(variable), ...args.slice(2)].join(',') + ')'
       last = close
     }
 
