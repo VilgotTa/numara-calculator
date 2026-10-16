@@ -28,12 +28,67 @@ math.import(factory('formulajs', [], () => formulajs))
 math.import(factory('nerdamer', [], () => nerdamer))
 math.import(factory('DateTime', [], () => DateTime))
 
+const FN_PREFIX = '__fn__'
+const REGEX_FN_DEF =
+  /^\s*([\p{L}_][\p{L}\p{M}\w]*)\s*\(\s*([\p{L}_][\p{L}\p{M}\w]*(?:\s*,\s*[\p{L}_][\p{L}\p{M}\w]*)*)\s*\)\s*=(?!=)\s*(.+)$/u
+
+/**
+ * Replace calls to user-defined functions, such as a(x)=2x+1, with their bodies
+ * so Nerdamer can solve equations that use them, e.g. solve(a(x)=0, x).
+ *
+ * @param {string} text The equation text.
+ * @returns {string} The equation with user-defined function calls expanded.
+ */
+function expandUserFunctions(text) {
+  const callRegex = /([\p{L}_][\p{L}\p{M}\w]*)\s*\(/gu
+
+  for (let pass = 0; pass < 20; pass++) {
+    let expanded = false
+
+    for (const match of text.matchAll(callRegex)) {
+      const def = app.mathScope.get(FN_PREFIX + match[1])
+
+      if (!def || (match.index > 0 && /[\p{L}\p{M}\w.]/u.test(text[match.index - 1]))) continue
+
+      const open = match.index + match[0].length
+      let depth = 1
+      let close = open
+
+      while (close < text.length && depth > 0) {
+        if (text[close] === '(') depth++
+        else if (text[close] === ')') depth--
+        close++
+      }
+
+      if (depth > 0) continue
+
+      const args = splitTopLevel(text.slice(open, close - 1)).map((arg) => arg.trim())
+
+      if (args.length !== def.params.length) throw new Error(`${match[1]} expects ${def.params.length} argument(s)`)
+
+      const body = def.body.replace(/[\p{L}_][\p{L}\p{M}\w]*/gu, (name) => {
+        const i = def.params.indexOf(name)
+
+        return i === -1 ? name : `(${args[i]})`
+      })
+
+      text = `${text.slice(0, match.index)}(${body})${text.slice(close)}`
+      expanded = true
+      break
+    }
+
+    if (!expanded) break
+  }
+
+  return text
+}
+
 // solve("0.1*w+(1-w)*0.05=0.075", "w") returns a number for one solution, or a list for several, smallest first.
 // An optional third argument picks one solution: solve("x^2-4=0", "x", 2) returns the 2nd smallest.
 math.import({
   solve: (equation, variable, index) => {
     const solutions = nerdamer
-      .solve(String(equation), String(variable))
+      .solve(expandUserFunctions(String(equation)), String(variable))
       .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
       .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
       .sort((a, b) => (typeof a === 'number' && typeof b === 'number' ? a - b : typeof a === 'number' ? -1 : 0))
@@ -215,6 +270,13 @@ function evaluateLine(line, lineIndex, lineHandle, stats, prevLineText) {
   let usesSum = false
 
   try {
+    // Remember user-defined functions so solve() can expand them.
+    const fnDef = line.match(REGEX_FN_DEF)
+
+    if (fnDef) {
+      setScope(FN_PREFIX + fnDef[1], { params: fnDef[2].split(',').map((p) => p.trim()), body: fnDef[3].trim() })
+    }
+
     // Pre‑process locale and currency symbols
     const usesComma = localeUsesComma()
 
@@ -745,6 +807,8 @@ export function runCalculation({
   const serializedScope = {}
 
   for (const [key, value] of app.mathScope.entries()) {
+    if (key.startsWith(FN_PREFIX)) continue
+
     if (typeof value === 'function') {
       serializedScope[key] = 'Function'
     } else {
