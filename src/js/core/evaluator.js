@@ -83,26 +83,51 @@ function expandUserFunctions(text) {
   return text
 }
 
+/**
+ * Solve an equation with Nerdamer and return its roots, smallest first. Real roots are numbers,
+ * anything else (complex roots, answers with other variables) is returned as text after them.
+ *
+ * @param {string} equation The equation, e.g. "x^2-4=0".
+ * @param {string} variable The variable to solve for.
+ * @returns {Array<number|string>} The roots.
+ */
+function getRoots(equation, variable) {
+  return nerdamer
+    .solve(expandUserFunctions(String(equation)), String(variable))
+    .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
+    .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
+    .sort((a, b) => (typeof a === 'number' && typeof b === 'number' ? a - b : typeof a === 'number' ? -1 : 0))
+}
+
+/**
+ * Return all roots as a list (a number if there is only one), or the nth one when an index is given.
+ *
+ * @param {Array<number|string>} roots The roots.
+ * @param {number} [index] 1-based index of the root to return.
+ * @returns {number|string|Array<number|string>} The selected root(s).
+ */
+function pickRoots(roots, index) {
+  if (index === undefined) return roots.length === 1 ? roots[0] : roots
+
+  if (!Number.isInteger(index) || index < 1 || index > roots.length) {
+    throw new RangeError(`solve: root ${index} not found, the equation has ${roots.length} root(s)`)
+  }
+
+  return roots[index - 1]
+}
+
 // solve("0.1*w+(1-w)*0.05=0.075", "w") returns a number for one solution, or a list for several, smallest first.
 // An optional third argument picks one solution: solve("x^2-4=0", "x", 2) returns the 2nd smallest.
+// rsolve works the same but only returns real roots, nroots counts all roots and nreal counts the real ones.
 math.import({
-  solve: (equation, variable, index) => {
-    const solutions = nerdamer
-      .solve(expandUserFunctions(String(equation)), String(variable))
-      .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
-      .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
-      .sort((a, b) => (typeof a === 'number' && typeof b === 'number' ? a - b : typeof a === 'number' ? -1 : 0))
-
-    if (index !== undefined) {
-      if (!Number.isInteger(index) || index < 1 || index > solutions.length) {
-        throw new RangeError(`solve: root ${index} not found, the equation has ${solutions.length} root(s)`)
-      }
-
-      return solutions[index - 1]
-    }
-
-    return solutions.length === 1 ? solutions[0] : solutions
-  }
+  solve: (equation, variable, index) => pickRoots(getRoots(equation, variable), index),
+  rsolve: (equation, variable, index) =>
+    pickRoots(
+      getRoots(equation, variable).filter((root) => typeof root === 'number'),
+      index
+    ),
+  nroots: (equation, variable) => getRoots(equation, variable).length,
+  nreal: (equation, variable) => getRoots(equation, variable).filter((root) => typeof root === 'number').length
 })
 
 const REGEX_CONTINUATION = /[+\-*/]/
@@ -212,7 +237,7 @@ function splitTopLevel(text) {
  * @returns {string} The line with unquoted solve() calls quoted.
  */
 function quoteSolveArgs(line) {
-  const regex = /\bsolve\s*\(/g
+  const regex = /\b(?:solve|rsolve|nroots|nreal)\s*\(/g
   let result = ''
   let last = 0
   let match
