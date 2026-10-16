@@ -108,6 +108,82 @@ function setScope(key, value) {
 }
 
 /**
+ * Split a string on commas that are not inside brackets or quotes.
+ *
+ * @param {string} text The text to split.
+ * @returns {string[]} The top-level parts.
+ */
+function splitTopLevel(text) {
+  const parts = []
+  let depth = 0
+  let quote = ''
+  let start = 0
+
+  for (let i = 0; i < text.length; i++) {
+    const ch = text[i]
+
+    if (quote) {
+      if (ch === '\\') i++
+      else if (ch === quote) quote = ''
+    } else if (ch === '"' || ch === "'") quote = ch
+    else if ('([{'.includes(ch)) depth++
+    else if (')]}'.includes(ch)) depth--
+    else if (ch === ',' && depth === 0) {
+      parts.push(text.slice(start, i))
+      start = i + 1
+    }
+  }
+
+  parts.push(text.slice(start))
+
+  return parts
+}
+
+/**
+ * Let solve() take an unquoted equation and variable, e.g. solve(2*x=6, x),
+ * by turning them into the quoted form solve("2*x=6", "x") before Math.js parses the line.
+ *
+ * @param {string} line The line to rewrite.
+ * @returns {string} The line with unquoted solve() calls quoted.
+ */
+function quoteSolveArgs(line) {
+  const regex = /\bsolve\s*\(/g
+  let result = ''
+  let last = 0
+  let match
+
+  while ((match = regex.exec(line))) {
+    const open = match.index + match[0].length
+    let depth = 1
+    let close = open
+
+    while (close < line.length && depth > 0) {
+      if (line[close] === '(') depth++
+      else if (line[close] === ')') depth--
+      close++
+    }
+
+    if (depth > 0) break
+
+    const args = splitTopLevel(line.slice(open, close - 1))
+    const equation = args[0]?.trim()
+    const variable = args[1]?.trim().replace(/^(["'])(.*)\1$/, '$2')
+
+    const isQuoted = /^(["']).*\1$/s.test(equation ?? '')
+    const isScopeName = /^[A-Za-z_]\w*$/.test(equation ?? '') && app.mathScope.has(equation)
+
+    if (args.length === 2 && equation && !isQuoted && !isScopeName && /^[A-Za-z_]\w*$/.test(variable ?? '')) {
+      result += line.slice(last, open) + `${JSON.stringify(equation)}, ${JSON.stringify(variable)})`
+      last = close
+    }
+
+    regex.lastIndex = close
+  }
+
+  return result + line.slice(last)
+}
+
+/**
  * Evaluate a single line and return the answer.
  *
  * @param {string} line The line to evaluate.
@@ -223,6 +299,8 @@ function evaluateLine(line, lineIndex, lineHandle, stats, prevLineText) {
         line = (app.mathScope.get('ans') ?? '') + line
       }
     }
+
+    line = quoteSolveArgs(line)
 
     // A bare `sum` totals the lines above it, back to the previous blank line.
     if (!app.mathScope.has('sum') && !REGEX_SUM_ASSIGN.test(line) && REGEX_SUM.test(line)) {
