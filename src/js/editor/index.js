@@ -68,7 +68,16 @@ export const keywords = [
 ]
 
 // Mode tokens
-const functionTokens = new Set([...mathFunctions.map(([f]) => f), 'solve', 'rsolve', 'nroots', 'nreal'])
+const functionTokens = new Set([
+  ...mathFunctions.map(([f]) => f),
+  'solve',
+  'rsolve',
+  'nroots',
+  'nreal',
+  'normcdf',
+  'normpdf',
+  'norminv'
+])
 const constantTokens = new Set(mathConstants.map(([c]) => c))
 const unitTokens = new Set(units().map((u) => u.token))
 const keywordTokens = new Set(keywords.map((key) => key.text))

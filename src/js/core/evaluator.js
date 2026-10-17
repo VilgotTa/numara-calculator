@@ -84,6 +84,25 @@ function expandUserFunctions(text) {
 }
 
 /**
+ * Unwrap a Formula.js result, which returns error objects instead of throwing.
+ *
+ * @param {*} result The Formula.js result.
+ * @returns {*} The result.
+ */
+function unwrapFormula(result) {
+  if (result instanceof Error) throw result
+
+  return result
+}
+
+// Normal distribution helpers. Mean defaults to 0 and standard deviation to 1.
+math.import({
+  normcdf: (x, mean = 0, sd = 1) => unwrapFormula(formulajs.NORM.DIST(x, mean, sd, true)),
+  normpdf: (x, mean = 0, sd = 1) => unwrapFormula(formulajs.NORM.DIST(x, mean, sd, false)),
+  norminv: (p, mean = 0, sd = 1) => unwrapFormula(formulajs.NORM.INV(p, mean, sd))
+})
+
+/**
  * Solve an equation with Nerdamer and return its roots, smallest first. Real roots are numbers,
  * anything else (complex roots, answers with other variables) is returned as text after them.
  *
