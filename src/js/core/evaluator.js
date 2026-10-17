@@ -95,6 +95,9 @@ function unwrapFormula(result) {
   return result
 }
 
+// ln is the natural logarithm, same as log.
+math.import({ ln: (x) => math.log(x) })
+
 // Normal distribution helpers. Mean defaults to 0 and standard deviation to 1.
 math.import({
   normcdf: (x, mean = 0, sd = 1) => unwrapFormula(formulajs.NORM.DIST(x, mean, sd, true)),
