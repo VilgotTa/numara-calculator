@@ -76,7 +76,8 @@ const functionTokens = new Set([
   'nreal',
   'normcdf',
   'normpdf',
-  'norminv'
+  'norminv',
+  'ln'
 ])
 const constantTokens = new Set(mathConstants.map(([c]) => c))
 const unitTokens = new Set(units().map((u) => u.token))
