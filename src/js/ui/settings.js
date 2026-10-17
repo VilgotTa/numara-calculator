@@ -597,7 +597,7 @@ dom.els('.settingItem').forEach((el) => {
 
 if (isElectron) {
   dom.resetSizeButton.addEventListener('click', () => {
-    const sidebarWidth = app.sidebarDocked ? (store.get('sideBarWidth') ?? 240) : 0
+    const sidebarWidth = app.sidebarDocked && !app.sidebarHidden ? (store.get('sideBarWidth') ?? 240) : 0
 
     numara.resetSize(560, 480, sidebarWidth)
 

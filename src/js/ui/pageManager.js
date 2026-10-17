@@ -123,6 +123,39 @@ function resetWindowToAppWrapper(sidebarWidth = 0, appWrapperSize = getAppWrappe
     })
 }
 
+app.sidebarHidden = store.get('sidebarHidden') === true
+
+/**
+ * Shows or hides the sidebar related header buttons depending on the dock and hidden state.
+ */
+function updateSidebarButtons() {
+  const showDocked = app.sidebarDocked && !app.sidebarHidden
+
+  dom.sideBarButton.style.display = showDocked ? 'none' : ''
+  dom.newPageButton.style.display = showDocked ? 'none' : ''
+  dom.leftActionsDivider.style.display = showDocked ? 'none' : ''
+}
+
+/**
+ * Hide the sidebar, including a docked one which can otherwise not be closed.
+ */
+export function hideSideBar() {
+  app.sidebarForceHide = true
+  UIkit.offcanvas('#sideBar').hide()
+  app.sidebarForceHide = false
+}
+
+/**
+ * Show the sidebar if it is hidden, hide it if it is shown.
+ */
+export function toggleSideBar() {
+  if (dom.sideBar.classList.contains('uk-open')) {
+    hideSideBar()
+  } else {
+    UIkit.offcanvas('#sideBar').show()
+  }
+}
+
 /** Setup side panel based on settings and window size.
  *
  * @param {boolean} show When true, ensure the docked panel is visible.
@@ -144,10 +177,7 @@ export function setupSideBar(show = false) {
   }
 
   dom.sideBar.classList.toggle('sidebar-docked', dock)
-  dom.sideBarButton.style.display = dock ? 'none' : ''
-  dom.closeSideBarButton.style.display = dock ? 'none' : ''
-  dom.newPageButton.style.display = dock ? 'none' : ''
-  dom.leftActionsDivider.style.display = dock ? 'none' : ''
+  updateSidebarButtons()
 
   if (dock) {
     const width = store.get('sideBarWidth') ?? SIDEBAR_DEFAULT_WIDTH
@@ -159,6 +189,10 @@ export function setupSideBar(show = false) {
     applySidebarWidth(width)
     setupSideBarResizer()
 
+    if (app.sidebarHidden) {
+      dom.appWrapper.style.left = '0'
+    }
+
     const isVisible = dom.sideBar.classList.contains('uk-open')
 
     if (!dockChanged && !(show && !isVisible)) return
@@ -169,6 +203,12 @@ export function setupSideBar(show = false) {
       escClose: false,
       bgClose: false
     })
+
+    if (app.sidebarHidden) {
+      if (isVisible) hideSideBar()
+
+      return
+    }
 
     if (!isVisible && (show || dockChanged)) {
       if (document.querySelector('.uk-modal.uk-open')) {
@@ -631,7 +671,27 @@ function newPageDialog() {
   modal.show('#dialogNewPage')
 }
 
-dom.closeSideBarButton.addEventListener('click', () => UIkit.offcanvas('#sideBar').hide())
+dom.closeSideBarButton.addEventListener('click', hideSideBar)
+
+// Remember a docked sidebar being hidden or shown and move the app area to match.
+UIkit.util.on('#sideBar', 'show', () => {
+  if (!app.sidebarDocked) return
+
+  app.sidebarHidden = false
+  store.set('sidebarHidden', false)
+  applySidebarWidth(store.get('sideBarWidth') ?? SIDEBAR_DEFAULT_WIDTH)
+  updateSidebarButtons()
+})
+
+UIkit.util.on('#sideBar', 'hidden', () => {
+  if (!app.sidebarDocked) return
+
+  app.sidebarHidden = true
+  store.set('sidebarHidden', true)
+  dom.appWrapper.style.left = '0'
+  updateSidebarButtons()
+  calculate()
+})
 dom.newPageButton.addEventListener('click', newPageDialog)
 dom.newPageButtonSP.addEventListener('click', newPageDialog)
 dom.dialogNewPageSave.addEventListener('click', () => newPage(false))

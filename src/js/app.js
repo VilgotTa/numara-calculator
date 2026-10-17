@@ -8,7 +8,7 @@ import { initializeSettingsTooltips } from './ui/settingsTips'
 import { generateIcons } from './ui/icons'
 import { numaraKeys } from './editor/keybindings.js'
 import { modal, notify, showError } from './ui/dialogs'
-import { getPageName, initializePages, pageOrder, populatePages, setupSideBar } from './ui/pageManager'
+import { getPageName, initializePages, pageOrder, populatePages, setupSideBar, toggleSideBar } from './ui/pageManager'
 import { plot } from './ui/functionPlot'
 import { applyAnswerPositionLayout, settings } from './ui/settings'
 import { applyUdfu } from './calc/userDefined'
@@ -325,6 +325,7 @@ const setupKeyboardShortcuts = () => {
     [isMac ? '$mod+C' : '$mod+Shift+C']: 'copyButton',
     '$mod+N': 'newPageButton',
     '$mod+P': 'printButton',
+    '$mod+S': 'sideBarToggle',
     'Shift+TAB': 'sideBarButton'
   }
 
@@ -339,6 +340,15 @@ const setupKeyboardShortcuts = () => {
 
       // Don't clear the page from inside a dialog's text field.
       if (command.endsWith('Backspace') && isModalOpen()) return
+
+      // Show or hide the sidebar, whether it is docked or a slide-in drawer.
+      if (button === 'sideBarToggle') {
+        event.preventDefault()
+
+        if (!document.querySelector('.uk-modal.uk-open')) toggleSideBar()
+
+        return
+      }
 
       event.preventDefault()
 
@@ -468,7 +478,7 @@ const setupUIkitUtils = () => {
   })
 
   UIkit.util.on('#sideBar', 'beforehide', (event) => {
-    if (app.sidebarDocked) {
+    if (app.sidebarDocked && !app.sidebarForceHide) {
       event.preventDefault()
     }
   })

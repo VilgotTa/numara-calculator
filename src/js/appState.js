@@ -18,6 +18,8 @@ export const app = {
   refreshCM: true,
   settings: null,
   sidebarDocked: null,
+  sidebarForceHide: false,
+  sidebarHidden: false,
   udfList: [],
   uduList: [],
   widgetMap: new WeakMap()
