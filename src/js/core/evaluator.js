@@ -95,6 +95,17 @@ function unwrapFormula(result) {
   return result
 }
 
+// pct(0.2) shows 20%, pct(1/3, 1) shows 33.3%. Without decimals it shows the value as is, without rounding noise.
+math.import({
+  pct: (x, decimals) => {
+    const percent = Number(math.number(x)) * 100
+
+    if (!Number.isFinite(percent)) throw new TypeError('pct expects a number')
+
+    return `${decimals === undefined ? Number(percent.toPrecision(12)) : percent.toFixed(decimals)}%`
+  }
+})
+
 // ln is the natural logarithm, same as log.
 math.import({ ln: (x) => math.log(x) })
 
