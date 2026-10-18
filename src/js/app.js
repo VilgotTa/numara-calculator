@@ -362,6 +362,41 @@ const setupKeyboardShortcuts = () => {
 
   numaraKeys(window, shortcuts)
 
+  // Tapping a Hyper key (Cmd+Ctrl+Opt+Shift pressed together with no other key) acts as Escape.
+  const modifierKeys = ['Meta', 'Control', 'Alt', 'Shift']
+  const hyperTapMs = 500
+  let hyperDownAt = null
+
+  window.addEventListener(
+    'keydown',
+    (event) => {
+      const isHyper = event.metaKey && event.ctrlKey && event.altKey && event.shiftKey
+
+      hyperDownAt = modifierKeys.includes(event.key) && isHyper ? performance.now() : null
+    },
+    true
+  )
+
+  window.addEventListener(
+    'keyup',
+    (event) => {
+      if (hyperDownAt === null || !modifierKeys.includes(event.key)) return
+
+      const isTap = performance.now() - hyperDownAt < hyperTapMs
+
+      hyperDownAt = null
+
+      if (!isTap) return
+
+      const target = document.activeElement ?? document.body
+      const init = { key: 'Escape', code: 'Escape', keyCode: 27, which: 27, bubbles: true, cancelable: true }
+
+      target.dispatchEvent(new KeyboardEvent('keydown', init))
+      target.dispatchEvent(new KeyboardEvent('keyup', init))
+    },
+    true
+  )
+
   // Listen to Escape key in the capture phase to close/hide the window safely.
   window.addEventListener(
     'keydown',
