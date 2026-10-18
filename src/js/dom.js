@@ -86,6 +86,7 @@ export const dom = {
   calcTimeout: document.getElementById('calcTimeout'),
   calcTimeoutLabel: document.getElementById('calcTimeoutLabel'),
   matrixType: document.getElementById('matrixType'),
+  palette: document.getElementById('palette'),
   answerPosition: document.getElementById('answerPosition'),
   keywordTips: document.getElementById('keywordTips'),
   matchBrackets: document.getElementById('matchBrackets'),

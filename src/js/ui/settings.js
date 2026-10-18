@@ -123,6 +123,7 @@ export const settings = {
     showTray: false,
     openAtLogin: false,
     escToClose: false,
+    palette: 'default',
     vim: false
   },
 
@@ -174,6 +175,7 @@ export const settings = {
       { bottom: 'Below Expression' }
     ]
     const matrixTypes = [{ Matrix: 'Matrix' }, { Array: 'Array' }]
+    const palettes = [{ default: 'Default' }, { billy: 'Billy Boys' }]
     const numericOutputs = [{ number: 'Number' }, { BigNumber: 'BigNumber' }, { Fraction: 'Fraction' }]
     const notations = [
       { auto: 'Auto' },
@@ -192,6 +194,7 @@ export const settings = {
     populateSelect(dom.numericOutput, numericOutputs)
     populateSelect(dom.notation, notations, 'spacer')
     populateSelect(dom.matrixType, matrixTypes)
+    populateSelect(dom.palette, palettes)
 
     dom.precisionLabel.textContent = app.settings.precision
     dom.calcTimeoutLabel.textContent = app.settings.calcTimeout
@@ -271,6 +274,7 @@ export const settings = {
       app.settings.theme === 'light' ? 'light' : app.settings.theme === 'dark' ? 'dark' : 'light dark'
 
     document.documentElement.style.colorScheme = cssColorScheme
+    document.documentElement.classList.toggle('palette-billy', app.settings.palette === 'billy')
 
     dom.numaraLogo.setAttribute('src', 'assets/logo-' + appTheme + '.png')
 

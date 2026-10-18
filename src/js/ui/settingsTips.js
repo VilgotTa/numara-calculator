@@ -29,6 +29,8 @@ const settingsTooltips = {
   lineNumbers: 'Show line numbers in the calculator display. (Default: Enabled)',
   lineWrap: 'Enable or disable line wrapping in the calculator display. (Default: Enabled)',
   vim: 'Use Vim keybindings in the editor. The current mode is shown at the bottom of the page. (Default: Disabled)',
+  palette:
+    'Color palette for the whole app. Billy Boys uses the colors of the Jack Vettriano painting and replaces the customized syntax colors while on. (Default: Default)',
   matchBrackets: 'Highlight matching brackets when the cursor is next to a bracket. (Default: Enabled)',
   matrixType: 'Set the default type for matrices. (Default: Matrix)',
   newPageOnStart: 'Open a new calculation page when the application starts. (Default: Disabled)',

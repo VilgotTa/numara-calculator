@@ -1,0 +1,303 @@
+/* "Billy Boys" color palette, after Jack Vettriano's painting: cream sky, amber and burnt sand,
+   navy suits, slate sea. Enabled with the Color palette setting, which adds .palette-billy to <html>. */
+
+html.palette-billy {
+  --bb-bg: light-dark(#f5e6bc, #1e2233);
+  --bb-surface: light-dark(#eedaa5, #272b3d);
+  --bb-raised: light-dark(#f9edcb, #2e3348);
+  --bb-hover: light-dark(#e8cf92, #353a50);
+  --bb-text: light-dark(#1e2233, #f2e2b3);
+  --bb-muted: light-dark(#8c7450, #9aa0b8);
+  --bb-faint: light-dark(#c9a86a, #4a5068);
+  --bb-line: light-dark(#e3c98e, #353a50);
+  --bb-accent: light-dark(#b8501e, #e0a040);
+  --bb-accent-strong: light-dark(#8e3416, #f0c070);
+  --bb-select: light-dark(#ebc98a, #3e4560);
+  --bb-sea: light-dark(#3f5a8a, #8a97b5);
+  --bb-danger: light-dark(#a3261a, #e57360);
+}
+
+/* Surfaces */
+html.palette-billy,
+html.palette-billy body,
+html.palette-billy .CodeMirror,
+html.palette-billy .cm-s-default,
+html.palette-billy .CodeMirror-foldgutter,
+html.palette-billy .uk-modal-dialog,
+html.palette-billy .uk-select:not([multiple]):not([size]),
+html.palette-billy .slider:before,
+html.palette-billy .slider.round:before {
+  background-color: var(--bb-bg);
+  color: var(--bb-text);
+}
+
+html.palette-billy .cm-s-numara .CodeMirror-linenumber,
+html.palette-billy .cm-s-numara .CodeMirror-hscrollbar,
+html.palette-billy .cm-s-numara .CodeMirror-scrollbar-filler,
+html.palette-billy .cm-s-numara .CodeMirror-gutter-filler,
+html.palette-billy .theme-pill-button.active {
+  background-color: var(--bb-bg) !important;
+}
+
+html.palette-billy .CodeMirror {
+  color: var(--bb-text) !important;
+}
+
+html.palette-billy .uk-offcanvas-bar,
+html.palette-billy .pageListHeader,
+html.palette-billy .pageListItem,
+html.palette-billy .pageListItemDrag,
+html.palette-billy .uk-dropdown,
+html.palette-billy .clr-picker,
+html.palette-billy :not(pre) > code {
+  border-color: var(--bb-line);
+  background: var(--bb-surface);
+  color: var(--bb-text);
+}
+
+html.palette-billy .pageListItem:hover,
+html.palette-billy .activePage,
+html.palette-billy .answer:hover,
+html.palette-billy .theme-pill-group {
+  background: var(--bb-hover);
+}
+
+html.palette-billy .uk-tooltip,
+html.palette-billy .uk-notification-message {
+  border-color: var(--bb-line);
+  background-color: var(--bb-raised);
+  color: var(--bb-text);
+}
+
+html.palette-billy .CodeMirror-hints,
+html.palette-billy .numara-search-panel,
+html.palette-billy .search-input {
+  border-color: var(--bb-line) !important;
+  background-color: var(--bb-raised) !important;
+  color: var(--bb-text) !important;
+}
+
+html.palette-billy .CodeMirror-hint:hover,
+html.palette-billy li.CodeMirror-hint-active,
+html.palette-billy .search-toggle-replace:hover,
+html.palette-billy .search-btn:hover,
+html.palette-billy .search-close-btn:hover,
+html.palette-billy .search-action-btn {
+  border-color: var(--bb-line) !important;
+  background-color: var(--bb-hover) !important;
+  color: var(--bb-text) !important;
+}
+
+html.palette-billy .uk-button-default,
+html.palette-billy .uk-button-default:focus,
+html.palette-billy .uk-button-default:hover,
+html.palette-billy .uk-button-danger,
+html.palette-billy .uk-button-danger:hover {
+  border-color: var(--bb-faint);
+  background-color: transparent;
+}
+
+/* Text */
+html.palette-billy .input,
+html.palette-billy .uk-modal-body,
+html.palette-billy .uk-select:not([multiple]):not([size]) option,
+html.palette-billy .renamePageButton,
+html.palette-billy .dupPageButton,
+html.palette-billy .deletePageButton,
+html.palette-billy .exportPageButton,
+html.palette-billy .sortListItem,
+html.palette-billy .precision,
+html.palette-billy .expLower,
+html.palette-billy .expUpper,
+html.palette-billy .colorInput,
+html.palette-billy .textBox,
+html.palette-billy .uk-tab > .uk-active > a,
+html.palette-billy text {
+  color: var(--bb-text);
+  fill: var(--bb-text);
+}
+
+html.palette-billy .uk-modal-title,
+html.palette-billy #dialogSettings h3,
+html.palette-billy .uk-text-secondary,
+html.palette-billy .winHeaderTitle,
+html.palette-billy .macHeaderTitle {
+  color: var(--bb-sea) !important;
+}
+
+html.palette-billy .action,
+html.palette-billy .noAction,
+html.palette-billy .noAction:hover,
+html.palette-billy .pageName,
+html.palette-billy .pageListSort,
+html.palette-billy .drop-parent-icon,
+html.palette-billy .uk-offcanvas-bar a,
+html.palette-billy .uk-tab > * > a,
+html.palette-billy .theme-pill-button,
+html.palette-billy .resetButtons a,
+html.palette-billy .lastUpdated,
+html.palette-billy .dialogAboutUpdateStatus,
+html.palette-billy .subSwitchIcon,
+html.palette-billy .search-toggle-replace,
+html.palette-billy .search-count,
+html.palette-billy .search-btn,
+html.palette-billy .search-close-btn,
+html.palette-billy .CodeMirror-foldgutter-open,
+html.palette-billy .CodeMirror-foldgutter-folded,
+html.palette-billy .activeLine > div {
+  color: var(--bb-muted) !important;
+}
+
+html.palette-billy .lineNo,
+html.palette-billy .CodeMirror-linenumber,
+html.palette-billy .cm-s-numara .CodeMirror-matchingbracket {
+  color: var(--bb-faint) !important;
+}
+
+html.palette-billy .customizeThemeButton,
+html.palette-billy .action:hover,
+html.palette-billy .drop-parent-icon:hover,
+html.palette-billy .pageListSort:hover,
+html.palette-billy .uk-offcanvas-bar a:hover,
+html.palette-billy .renamePageButton:hover,
+html.palette-billy .dupPageButton:hover,
+html.palette-billy .exportPageButton:hover,
+html.palette-billy .sortListItem:hover,
+html.palette-billy .resetButtons a:hover,
+html.palette-billy .theme-pill-button:hover,
+html.palette-billy .theme-pill-button.active,
+html.palette-billy .uk-notification-message-primary,
+html.palette-billy .CodeMirror-foldgutter-open:hover,
+html.palette-billy .CodeMirror-foldgutter-folded:hover {
+  color: var(--bb-accent) !important;
+}
+
+html.palette-billy .deletePageButton:hover,
+html.palette-billy .deleteAllPagesButton:hover,
+html.palette-billy .resetAppButton:hover,
+html.palette-billy .uk-button-danger,
+html.palette-billy .uk-button-danger:hover,
+html.palette-billy .errTitle {
+  color: var(--bb-danger) !important;
+}
+
+/* Lines, borders and dividers */
+html.palette-billy .divider::before,
+html.palette-billy ::-webkit-scrollbar-thumb {
+  background-color: var(--bb-line) !important;
+}
+
+html.palette-billy .divider:hover::before,
+html.palette-billy .sideBarResizer:hover::after,
+html.palette-billy .sideBarResizer.resizing::after,
+html.palette-billy ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--bb-faint) !important;
+}
+
+html.palette-billy .actionDivider,
+html.palette-billy .ruler,
+html.palette-billy #settingsTabs::before,
+html.palette-billy .dialog-about-links,
+html.palette-billy .colorHR,
+html.palette-billy .uk-offcanvas-bar {
+  border-color: var(--bb-line) !important;
+}
+
+html.palette-billy .showRulers .CodeMirror-code > div,
+html.palette-billy .showRulers .CodeMirror-code > pre {
+  border-bottom-color: var(--bb-line) !important;
+}
+
+/* Accents that use the UIkit blue by default */
+html.palette-billy .slider {
+  background-color: var(--bb-faint);
+}
+
+html.palette-billy input:checked + .slider,
+html.palette-billy input[type='range']::-webkit-slider-thumb,
+html.palette-billy .CodeMirror-foldmarker {
+  background-color: var(--bb-accent);
+}
+
+html.palette-billy .notificationDot > svg {
+  fill: var(--bb-accent);
+  stroke: var(--bb-accent);
+}
+
+html.palette-billy .cm-searching {
+  border-bottom-color: var(--bb-accent) !important;
+}
+
+/* Editor */
+html.palette-billy .cm-s-numara .CodeMirror-selected {
+  background: var(--bb-select) !important;
+}
+
+html.palette-billy .CodeMirror-cursor:before {
+  background: var(--bb-text);
+}
+
+html.palette-billy .CodeMirror-placeholder {
+  color: var(--bb-faint) !important;
+}
+
+/* Syntax colors. These take precedence over the Customize theme colors while this palette is on. */
+html.palette-billy .answer {
+  color: light-dark(#b8501e, #e0a040);
+}
+
+html.palette-billy .cm-variable {
+  color: light-dark(#3f5a8a, #8a97b5);
+}
+
+html.palette-billy .cm-formulajs,
+html.palette-billy .cm-function,
+html.palette-billy .cm-nerdamer,
+html.palette-billy .cm-udf,
+html.palette-billy .cm-datetime {
+  color: light-dark(#7a2e22, #d8782a);
+}
+
+html.palette-billy .cm-keyword,
+html.palette-billy .cm-lineNo,
+html.palette-billy .vimMode {
+  color: light-dark(#c8781e, #e8b060);
+}
+
+html.palette-billy .cm-comment {
+  color: light-dark(#a08560, #8a7a5e);
+}
+
+html.palette-billy .cm-number,
+html.palette-billy .cm-text,
+html.palette-billy .cm-plain {
+  color: var(--bb-text);
+}
+
+html.palette-billy .cm-operator {
+  color: light-dark(#8c7450, #9aa0b8);
+}
+
+html.palette-billy .cm-constant {
+  color: light-dark(#6b5a3e, #c9b07a);
+}
+
+html.palette-billy .cm-currency {
+  color: light-dark(#6b6a3e, #a8a070);
+}
+
+html.palette-billy .cm-unit,
+html.palette-billy .cm-udu {
+  color: light-dark(#5b6b8c, #a8b4cf);
+}
+
+html.palette-billy .cm-excel {
+  color: light-dark(#9a4a2a, #e39a6a);
+}
+
+html.palette-billy .lineError,
+html.palette-billy .lineError:hover,
+html.palette-billy .lineError > div,
+html.palette-billy .lineNoError > div {
+  color: var(--bb-danger);
+}
