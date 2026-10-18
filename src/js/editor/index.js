@@ -444,6 +444,9 @@ function toggleComment(cm) {
   })
 }
 
+// Swedish keyboards type $ with Option+4, so also let € (Shift+4) jump to the end of the line in Vim mode.
+CodeMirror.Vim.map('€', '$')
+
 /** CodeMirror instances. */
 export const cm = CodeMirror.fromTextArea(dom.inputArea, {
   autofocus: true,
