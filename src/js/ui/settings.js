@@ -122,7 +122,8 @@ export const settings = {
     thouSep: 'system',
     showTray: false,
     openAtLogin: false,
-    escToClose: false
+    escToClose: false,
+    vim: false
   },
 
   /** Initialize settings. */
@@ -314,6 +315,8 @@ export const settings = {
     cm.setOption('lineWrapping', app.settings.lineWrap)
     cm.setOption('matchBrackets', app.settings.syntax && app.settings.matchBrackets ? { maxScanLines: 1 } : false)
     cm.setOption('autoCloseBrackets', app.settings.closeBrackets)
+    cm.setOption('keyMap', app.settings.vim ? 'vim' : 'default')
+    updateVimIndicator()
 
     math.config({
       matrix: app.settings.matrixType,
@@ -550,6 +553,21 @@ if (isElectron) {
     })
   }
 }
+
+const VIM_LABELS = { normal: 'NORMAL', insert: 'INSERT', replace: 'REPLACE', visual: 'VISUAL' }
+const VIM_SUB_LABELS = { linewise: 'V-LINE', blockwise: 'V-BLOCK' }
+let vimLabel = VIM_LABELS.normal
+
+/** Show the current Vim mode at the bottom of the page, or hide it when Vim keybindings are off. */
+function updateVimIndicator() {
+  dom.vimMode.hidden = !app.settings.vim
+  dom.vimMode.textContent = vimLabel
+}
+
+cm.on('vim-mode-change', ({ mode, subMode }) => {
+  vimLabel = VIM_SUB_LABELS[subMode] ?? VIM_LABELS[mode] ?? VIM_LABELS.normal
+  updateVimIndicator()
+})
 
 dom.els('.settingItem').forEach((el) => {
   el.addEventListener('change', async () => {

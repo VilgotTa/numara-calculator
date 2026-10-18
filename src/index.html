@@ -54,6 +54,7 @@
           <a id="clearButton" class="action" title="Clear page" uk-tooltip><i data-lucide="eraser"></i></a>
         </div>
         <div id="centerActions" class="centerActions uk-flex uk-flex-center uk-flex-middle uk-flex-1 uk-text-center">
+          <span id="vimMode" class="vimMode" hidden></span>
           <span id="pageName" class="pageName" uk-tooltip="delay: 1000"></span>
         </div>
         <div id="rightActions" class="rightActions uk-flex uk-flex-right uk-flex-middle">
@@ -371,6 +372,15 @@
               <div class="uk-text-right uk-width-2-5 uk-position-relative">
                 <label class="switch">
                   <input id="matchBrackets" type="checkbox" class="settingItem" />
+                  <span class="slider round"></span>
+                </label>
+              </div>
+            </div>
+            <div class="uk-flex uk-flex-middle uk-flex-between">
+              <div data-help="vim">Vim keybindings</div>
+              <div class="uk-text-right uk-width-2-5 uk-position-relative">
+                <label class="switch">
+                  <input id="vim" type="checkbox" class="settingItem" />
                   <span class="slider round"></span>
                 </label>
               </div>

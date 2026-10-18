@@ -1,5 +1,6 @@
 // Addons for CodeMirror editor
 import 'codemirror/mode/javascript/javascript'
+import 'codemirror/keymap/vim'
 import 'codemirror/addon/dialog/dialog'
 import 'codemirror/addon/display/placeholder'
 import 'codemirror/addon/edit/closebrackets'

@@ -28,6 +28,7 @@ const settingsTooltips = {
   lineHeight: 'Set the line height for the calculator display. (Default: Normal)',
   lineNumbers: 'Show line numbers in the calculator display. (Default: Enabled)',
   lineWrap: 'Enable or disable line wrapping in the calculator display. (Default: Enabled)',
+  vim: 'Use Vim keybindings in the editor. The current mode is shown at the bottom of the page. (Default: Disabled)',
   matchBrackets: 'Highlight matching brackets when the cursor is next to a bracket. (Default: Enabled)',
   matrixType: 'Set the default type for matrices. (Default: Matrix)',
   newPageOnStart: 'Open a new calculation page when the application starts. (Default: Disabled)',

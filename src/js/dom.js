@@ -89,6 +89,8 @@ export const dom = {
   answerPosition: document.getElementById('answerPosition'),
   keywordTips: document.getElementById('keywordTips'),
   matchBrackets: document.getElementById('matchBrackets'),
+  vim: document.getElementById('vim'),
+  vimMode: document.getElementById('vimMode'),
   thouSep: document.getElementById('thouSep'),
   dateFormat: document.getElementById('dateFormat'),
   localeWarn: document.getElementById('localeWarn'),

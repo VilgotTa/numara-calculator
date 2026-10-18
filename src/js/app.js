@@ -375,7 +375,8 @@ const setupKeyboardShortcuts = () => {
           app.settings.escToClose &&
           !isModalOpen() &&
           !isDialogOpen &&
-          (!cm || !cm.state.completionActive)
+          (!cm || !cm.state.completionActive) &&
+          !(app.settings.vim && (cm.state.vim?.insertMode || cm.state.vim?.visualMode))
         ) {
           event.preventDefault()
           event.stopPropagation()
