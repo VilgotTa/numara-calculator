@@ -1,5 +1,5 @@
 import { checkColorChange, colors } from './ui/theme'
-import { copyAll, initializeContextMenus, safeCopyText } from './ui/contextMenu'
+import { copyAll, copyCurrentLine, copyLatex, initializeContextMenus, safeCopyText } from './ui/contextMenu'
 import { dom } from './dom'
 import { cm, refreshEditor, udfInput, uduInput } from './editor'
 import { calculate } from './calc/calcManager'
@@ -326,6 +326,9 @@ const setupKeyboardShortcuts = () => {
     '$mod+N': 'newPageButton',
     '$mod+P': 'printButton',
     '$mod+S': 'sideBarToggle',
+    // Copy the current line with its answer (macOS) and the page as LaTeX for Obsidian.
+    ...(isMac && { '$mod+Shift+C': 'copyLine' }),
+    '$mod+Shift+L': 'copyLatex',
     'Shift+TAB': 'sideBarButton'
   }
 
@@ -341,11 +344,13 @@ const setupKeyboardShortcuts = () => {
       // Don't clear the page from inside a dialog's text field.
       if (command.endsWith('Backspace') && isModalOpen()) return
 
-      // Show or hide the sidebar, whether it is docked or a slide-in drawer.
-      if (button === 'sideBarToggle') {
+      // Actions that are not tied to a button.
+      const actions = { sideBarToggle: toggleSideBar, copyLine: copyCurrentLine, copyLatex }
+
+      if (actions[button]) {
         event.preventDefault()
 
-        if (!document.querySelector('.uk-modal.uk-open')) toggleSideBar()
+        if (!document.querySelector('.uk-modal.uk-open')) actions[button]()
 
         return
       }

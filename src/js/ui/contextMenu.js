@@ -2,6 +2,8 @@ import { dom } from '../dom'
 import { cm, udfInput, uduInput } from '../editor'
 import { notify } from './dialogs'
 import { isElectron } from '../appState'
+import { formatCopiedLine } from './copyFormat'
+import { pageToLatex } from './latex'
 
 /**
  * Helper to safely copy text to clipboard and show notification.
@@ -86,7 +88,7 @@ function copyAnswer(lineIndex, withLines) {
 
   const line = cm.getLine(lineIndex).trim()
   const answer = dom.el(`[data-index="${lineIndex}"]`)?.firstChild?.dataset.answer
-  const copiedText = withLines ? `${line} = ${answer}` : `${answer}`
+  const copiedText = withLines ? formatCopiedLine(line, answer ?? '') : `${answer}`
   const safeText = safeCopyText(copiedText)
 
   copyToClipboard(
@@ -135,7 +137,7 @@ export function copyAll() {
   const answersMap = {}
 
   document.querySelectorAll('#output [data-index]').forEach((el) => {
-    answersMap[el.getAttribute('data-index')] = el.textContent ?? ''
+    answersMap[el.getAttribute('data-index')] = (el.textContent ?? '').trim()
   })
 
   let lineIdx = 0
@@ -143,16 +145,35 @@ export function copyAll() {
   cm.eachLine((line) => {
     const text = line.text.trim()
 
-    const answer = answersMap[lineIdx] ?? ''
-    const rhs = text.match(/^[A-Za-z_]\w*\s*=\s*([^=].*)$/)?.[1].trim()
-    const isLiteral = rhs !== undefined && (/^[-+]?(\d[\d_,]*\.?\d*|\.\d+)(e[-+]?\d+)?$/i.test(rhs) || rhs === answer)
-
-    copiedCalc.push(!text || text.match(/^(#|\/\/)/) || isLiteral ? text : `${text}=${answer}`)
+    copiedCalc.push(formatCopiedLine(text, answersMap[lineIdx] ?? ''))
 
     lineIdx++
   })
 
   copyToClipboard(copiedCalc.join('\n'), 'Copied page to clipboard.')
+}
+
+/**
+ * Copy the line the cursor is on, with its answer.
+ */
+export function copyCurrentLine() {
+  copyAnswer(cm.getCursor().line, true)
+}
+
+/**
+ * Copy the page as LaTeX for Obsidian.
+ */
+export function copyLatex() {
+  if (cm.getValue() === '') return copyToClipboard()
+
+  const lines = cm.getValue().split('\n')
+  const answers = lines.map(() => '')
+
+  document.querySelectorAll('#output [data-index]').forEach((el) => {
+    answers[+el.getAttribute('data-index')] = (el.firstChild?.dataset?.answer ?? el.textContent ?? '').trim()
+  })
+
+  copyToClipboard(pageToLatex(lines, answers), 'Copied page as LaTeX to clipboard.')
 }
 
 /**
