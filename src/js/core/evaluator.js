@@ -117,6 +117,34 @@ math.import({
 })
 
 /**
+ * Replace variables defined on earlier lines with their numeric values, so solve(mer*x+(1-x)*rf=der, x)
+ * gives a number instead of an answer in terms of mer, rf and der. The variable being solved for is left alone.
+ *
+ * @param {string} text The equation text.
+ * @param {string} variable The variable to solve for.
+ * @returns {string} The equation with known values filled in.
+ */
+function substituteScope(text, variable) {
+  return text.replace(/[\p{L}_][\p{L}\p{M}\w]*/gu, (name, offset) => {
+    if (name === variable || !app.mathScope.has(name) || text[offset - 1] === '.') return name
+
+    const value = app.mathScope.get(name)
+
+    if (typeof value === 'function') return name
+
+    try {
+      const number = math.number(value)
+
+      if (typeof number !== 'number' || !Number.isFinite(number)) return name
+
+      return `(${number.toLocaleString('en-US', { useGrouping: false, maximumSignificantDigits: 17 })})`
+    } catch {
+      return name
+    }
+  })
+}
+
+/**
  * Solve an equation with Nerdamer and return its roots, smallest first. Real roots are numbers,
  * anything else (complex roots, answers with other variables) is returned as text after them.
  *
@@ -126,7 +154,7 @@ math.import({
  */
 function getRoots(equation, variable) {
   return nerdamer
-    .solve(expandUserFunctions(String(equation)), String(variable))
+    .solve(substituteScope(expandUserFunctions(String(equation)), String(variable)), String(variable))
     .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
     .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
     .sort((a, b) => (typeof a === 'number' && typeof b === 'number' ? a - b : typeof a === 'number' ? -1 : 0))
