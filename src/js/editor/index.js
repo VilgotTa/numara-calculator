@@ -74,6 +74,7 @@ const functionTokens = new Set([
   'rsolve',
   'nroots',
   'nreal',
+  'ssolve',
   'normcdf',
   'normpdf',
   'norminv',

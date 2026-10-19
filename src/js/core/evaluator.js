@@ -150,11 +150,14 @@ function substituteScope(text, variable) {
  *
  * @param {string} equation The equation, e.g. "x^2-4=0".
  * @param {string} variable The variable to solve for.
+ * @param {boolean} [useScope=true] Fill in values of variables defined on earlier lines.
  * @returns {Array<number|string>} The roots.
  */
-function getRoots(equation, variable) {
+function getRoots(equation, variable, useScope = true) {
+  const expanded = expandUserFunctions(String(equation))
+
   return nerdamer
-    .solve(substituteScope(expandUserFunctions(String(equation)), String(variable)), String(variable))
+    .solve(useScope ? substituteScope(expanded, String(variable)) : expanded, String(variable))
     .symbol.elements.map((el) => nerdamer(el).evaluate().text('decimals'))
     .map((text) => (Number.isFinite(Number(text)) ? Number(text) : text))
     .sort((a, b) => (typeof a === 'number' && typeof b === 'number' ? a - b : typeof a === 'number' ? -1 : 0))
@@ -182,6 +185,8 @@ function pickRoots(roots, index) {
 // rsolve works the same but only returns real roots, nroots counts all roots and nreal counts the real ones.
 math.import({
   solve: (equation, variable, index) => pickRoots(getRoots(equation, variable), index),
+  // ssolve keeps other variables as symbols, e.g. ssolve(m*x+(1-x)*r=d, x) gives (-d+r)*(-m+r)^(-1).
+  ssolve: (equation, variable, index) => pickRoots(getRoots(equation, variable, false), index),
   rsolve: (equation, variable, index) =>
     pickRoots(
       getRoots(equation, variable).filter((root) => typeof root === 'number'),
@@ -298,7 +303,7 @@ function splitTopLevel(text) {
  * @returns {string} The line with unquoted solve() calls quoted.
  */
 function quoteSolveArgs(line) {
-  const regex = /\b(?:solve|rsolve|nroots|nreal)\s*\(/g
+  const regex = /\b(?:solve|ssolve|rsolve|nroots|nreal)\s*\(/g
   let result = ''
   let last = 0
   let match
