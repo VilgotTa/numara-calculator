@@ -22,9 +22,18 @@
   user-select: none;
 }
 
+html {
+  --bg-alpha: 100%;
+  --app-bg-alt: color-mix(in srgb, light-dark(#ffffff, #222222) var(--bg-alpha), transparent);
+  --app-bg: color-mix(in srgb, light-dark(#ffffff, #1f1f1f) var(--bg-alpha), transparent);
+}
+
+html {
+  background-color: var(--app-bg);
+}
+
 html,
 body {
-  background-color: light-dark(#ffffff, #1f1f1f);
   height: 100%;
   color: light-dark(#444444, #ffffff);
   font-size: 12px;
@@ -505,13 +514,13 @@ text {
 .pageListHeader,
 .pageListItem {
   border-bottom: 1px solid light-dark(#eaeaea, #181818);
-  background-color: light-dark(#ffffff, #222222);
+  background-color: var(--app-bg-alt);
   color: light-dark(#444444, #e6e6e6);
 }
 
 .pageListItemDrag {
   border: 1px solid light-dark(#eaeaea, #181818);
-  background-color: light-dark(#ffffff, #222222);
+  background-color: var(--app-bg-alt);
 }
 
 .pageListItem:hover,

@@ -4,6 +4,7 @@ import { isMac } from '../appState'
 // Settings tooltips for settings in the application
 const settingsTooltips = {
   alwaysOnTop: 'Keep Numara on top off all other windows on the screen. (Default: Disabled)',
+  windowOpacity: 'Set the background opacity of the Numara window. Text stays fully visible. (Default: 100%)',
   showTray: isMac
     ? 'Keep Numara in the menu bar. (Default: Disabled)'
     : 'Keep Numara in the system tray. (Default: Disabled)',

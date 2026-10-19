@@ -78,6 +78,8 @@ export const dom = {
   bigNumWarn: document.getElementById('bigNumWarn'),
   notation: document.getElementById('notation'),
   precision: document.getElementById('precision'),
+  windowOpacity: document.getElementById('windowOpacity'),
+  windowOpacityLabel: document.getElementById('windowOpacityLabel'),
   precisionLabel: document.getElementById('precisionLabel'),
   expUpper: document.getElementById('expUpper'),
   expUpperLabel: document.getElementById('expUpperLabel'),

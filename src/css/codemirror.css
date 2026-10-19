@@ -6,7 +6,7 @@
 
 /* Editor theme */
 .cm-s-numara {
-  background-color: light-dark(#ffffff, #1f1f1f);
+  background-color: transparent;
   height: 100% !important;
   color: light-dark(#000000, #e6e6e6) !important;
   font-family: 'Roboto Mono' !important;
@@ -31,7 +31,7 @@
 }
 
 .cm-s-numara .CodeMirror-linenumber {
-  background-color: light-dark(#ffffff, #1f1f1f) !important;
+  background-color: transparent !important;
   padding: 0 10px 0 0 !important;
 }
 
@@ -92,7 +92,7 @@ body.numara-search-panel-open .CodeMirror-selected {
 .cm-s-numara .CodeMirror-hscrollbar,
 .cm-s-numara .CodeMirror-scrollbar-filler,
 .cm-s-numara .CodeMirror-gutter-filler {
-  background-color: light-dark(#ffffff, #1f1f1f) !important;
+  background-color: transparent !important;
 }
 
 .cm-s-numara .CodeMirror-sizer {
@@ -338,7 +338,7 @@ li.CodeMirror-hint-active {
 /* CodeMirror Fold Gutter styling */
 .CodeMirror-foldgutter {
   cursor: pointer;
-  background-color: light-dark(#ffffff, #1f1f1f);
+  background-color: transparent;
   width: 12px;
 }
 

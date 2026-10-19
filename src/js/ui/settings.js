@@ -82,6 +82,7 @@ export const settings = {
   /** Default settings. */
   defaults: {
     alwaysOnTop: false,
+    windowOpacity: 100,
     syncDirEnabled: false,
     syncDir: '',
     answerPosition: 'left',
@@ -197,6 +198,7 @@ export const settings = {
     populateSelect(dom.palette, palettes)
 
     dom.precisionLabel.textContent = app.settings.precision
+    dom.windowOpacityLabel.textContent = app.settings.windowOpacity + '%'
     dom.calcTimeoutLabel.textContent = app.settings.calcTimeout
     dom.expLowerLabel.textContent = app.settings.expLower
     dom.expUpperLabel.textContent = app.settings.expUpper
@@ -233,6 +235,12 @@ export const settings = {
 
     if (alwaysOnTopContainer) {
       alwaysOnTopContainer.style.display = isElectron ? '' : 'none'
+    }
+
+    const opacityContainer = dom.el('#opacityContainer')
+
+    if (opacityContainer) {
+      opacityContainer.style.display = isElectron ? '' : 'none'
     }
 
     const showTrayContainer = dom.el('#showTrayContainer')
@@ -274,6 +282,7 @@ export const settings = {
       app.settings.theme === 'light' ? 'light' : app.settings.theme === 'dark' ? 'dark' : 'light dark'
 
     document.documentElement.style.colorScheme = cssColorScheme
+    document.documentElement.style.setProperty('--bg-alpha', app.settings.windowOpacity + '%')
     document.documentElement.classList.toggle('palette-billy', app.settings.palette === 'billy')
 
     dom.numaraLogo.setAttribute('src', 'assets/logo-' + appTheme + '.png')
@@ -493,6 +502,11 @@ dom.localeWarn.addEventListener('click', () => {
 
 dom.currencyWarn.addEventListener('click', () => {
   showError('App restart needed', `Currencies used in existing calculations will be removed after app restart.`)
+})
+
+dom.windowOpacity.addEventListener('input', () => {
+  dom.windowOpacityLabel.textContent = dom.windowOpacity.value + '%'
+  document.documentElement.style.setProperty('--bg-alpha', dom.windowOpacity.value + '%')
 })
 
 dom.precision.addEventListener('input', () => {

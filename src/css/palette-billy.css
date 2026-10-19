@@ -15,14 +15,24 @@ html.palette-billy {
   --bb-select: light-dark(#ebc98a, #3e4560);
   --bb-sea: light-dark(#3f5a8a, #8a97b5);
   --bb-danger: light-dark(#a3261a, #e57360);
+  --bb-bg-a: color-mix(in srgb, var(--bb-bg) var(--bg-alpha), transparent);
+  --bb-surface-a: color-mix(in srgb, var(--bb-surface) var(--bg-alpha), transparent);
 }
 
 /* Surfaces */
-html.palette-billy,
+html.palette-billy {
+  background-color: var(--bb-bg-a);
+  color: var(--bb-text);
+}
+
 html.palette-billy body,
 html.palette-billy .CodeMirror,
+html.palette-billy .CodeMirror-foldgutter {
+  background-color: transparent;
+  color: var(--bb-text);
+}
+
 html.palette-billy .cm-s-default,
-html.palette-billy .CodeMirror-foldgutter,
 html.palette-billy .uk-modal-dialog,
 html.palette-billy .uk-select:not([multiple]):not([size]),
 html.palette-billy .slider:before,
@@ -34,7 +44,10 @@ html.palette-billy .slider.round:before {
 html.palette-billy .cm-s-numara .CodeMirror-linenumber,
 html.palette-billy .cm-s-numara .CodeMirror-hscrollbar,
 html.palette-billy .cm-s-numara .CodeMirror-scrollbar-filler,
-html.palette-billy .cm-s-numara .CodeMirror-gutter-filler,
+html.palette-billy .cm-s-numara .CodeMirror-gutter-filler {
+  background-color: transparent !important;
+}
+
 html.palette-billy .theme-pill-button.active {
   background-color: var(--bb-bg) !important;
 }
@@ -43,10 +56,15 @@ html.palette-billy .CodeMirror {
   color: var(--bb-text) !important;
 }
 
+html.palette-billy .pageListItem,
+html.palette-billy .pageListItemDrag {
+  border-color: var(--bb-line);
+  background: var(--bb-surface-a);
+  color: var(--bb-text);
+}
+
 html.palette-billy .uk-offcanvas-bar,
 html.palette-billy .pageListHeader,
-html.palette-billy .pageListItem,
-html.palette-billy .pageListItemDrag,
 html.palette-billy .uk-dropdown,
 html.palette-billy .clr-picker,
 html.palette-billy :not(pre) > code {

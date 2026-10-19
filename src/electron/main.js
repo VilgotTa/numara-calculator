@@ -160,7 +160,8 @@ function setTitleBarOverlay(isTrans) {
  */
 function createAppWindow() {
   win = new BrowserWindow({
-    backgroundColor: getThemeColor(),
+    backgroundColor: TRANS_COLOR,
+    transparent: true,
     frame: false,
     height: parseInt(config.get('appHeight')),
     width: parseInt(config.get('appWidth')),
